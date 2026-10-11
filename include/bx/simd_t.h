@@ -86,7 +86,7 @@ extern "C" float __cdecl fmaf(float, float, float);
 #	endif // BX_COMPILER_MSVC
 #endif // BX_CONFIG_FMA
 
-#if BX_CPU_X86 && (defined(__SSE2__) || (BX_COMPILER_MSVC && (BX_ARCH_64BIT || _M_IX86_FP >= 2) ) )
+#if BX_CPU_X86 && (defined(__SSE4_1__) || (BX_COMPILER_MSVC && (BX_ARCH_64BIT || _M_IX86_FP >= 2) ) )
 #	include <emmintrin.h>
 #	include <smmintrin.h> // SSE4.1  minspec is SSE4.2 so always available
 #	if defined(__SSE4_2__) || BX_COMPILER_MSVC
