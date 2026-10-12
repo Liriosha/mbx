@@ -1,5 +1,4 @@
 allocator.cpp
-amalgamated.cpp
 bitarray.cpp
 bounds.cpp
 bx.cpp
