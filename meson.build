@@ -1,61 +1,62 @@
-project('bx','cpp')
+project('bx', 'cpp')
+
+add_project_arguments('-funsigned-char', language: 'cpp')
 
 fs = import('fs')
 sources = []
 foreach s : fs.read('sources.txt').strip().split('\n')
-  sources += files('src/' + s)
+    sources += files('src/' + s)
 endforeach
 tests = []
 foreach s : fs.read('tests.txt').strip().split('\n')
-  tests += files('tests/' + s)
+    tests += files('tests/' + s)
 endforeach
 
 if host_machine.system() == 'darwin'
-  compat_dir = 'include/compat/osx'
+    compat_dir = 'include/compat/osx'
 elif host_machine.system() == 'windows'
-  compat_dir = 'include/compat/msvc'
+    compat_dir = 'include/compat/msvc'
 else
-  compat_dir = 'include/compat/linux'
+    compat_dir = 'include/compat/linux'
 endif
 
-bx_inc = include_directories(
-  'include',
-  compat_dir
-)
+bx_inc = include_directories('include', compat_dir)
 
-bx_cpp_args=[]
+bx_cpp_args = []
 
-if(get_option('buildtype') == 'debug')
-  bx_cpp_args += ['-DBX_CONFIG_DEBUG=1']
+if (get_option('buildtype') == 'debug')
+    bx_cpp_args += ['-DBX_CONFIG_DEBUG=1']
 else
-  bx_cpp_args += ['-DBX_CONFIG_DEBUG=0']
+    bx_cpp_args += ['-DBX_CONFIG_DEBUG=0']
 endif
 
 cc = meson.get_compiler('cpp')
 if cc.get_id() == 'msvc' or cc.get_id() == 'clang-cl'
-  # /Zc:preprocessor — required by bgfx's platform.h on modern MSVC.
-  # /EHa — allow SEH (__try/__except) in functions with C++ objects
-  # (bx/src/thread.cpp uses __try alongside std::string-like types).
-  bx_cpp_args += ['/Zc:preprocessor', '/EHa']
+    # /Zc:preprocessor — required by bgfx's platform.h on modern MSVC.
+    # /EHa — allow SEH (__try/__except) in functions with C++ objects
+    # (bx/src/thread.cpp uses __try alongside std::string-like types).
+    bx_cpp_args += ['/Zc:preprocessor', '/EHa']
 endif
 
-bx_lib = static_library('bx', sources,
-  include_directories: bx_inc,
-  cpp_args: bx_cpp_args,
+bx_lib = static_library(
+    'bx',
+    sources,
+    include_directories: bx_inc,
+    cpp_args: bx_cpp_args,
 )
 
 bx_dep = declare_dependency(
-  include_directories: bx_inc,
-  link_with: bx_lib,
-  compile_args: bx_cpp_args,
+    include_directories: bx_inc,
+    link_with: bx_lib,
+    compile_args: bx_cpp_args,
+)
+subproject('catch2')
+catch_dep = dependency('catch2')
+e = executable(
+    'tests',
+    tests,
+    dependencies: [catch_dep, bx_dep],
+    cpp_args: ['-DBX_CONFIG_DEBUG'],
 )
 
-# foreach test_src : tests
-#   name = 'bx_'+fs.name(test_src).split('.')[0]
-#   e = executable(
-#     name,
-#     test_src,
-#   )
-#
-#   test(name, e)
-# endforeach
+test('tests', e)
