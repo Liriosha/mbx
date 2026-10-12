@@ -5,11 +5,11 @@ add_project_arguments('-funsigned-char', language: 'cpp')
 fs = import('fs')
 sources = []
 foreach s : fs.read('sources.txt').strip().split('\n')
-    sources += files('src/' + s)
+    sources += files('src/' + s + '.cpp')
 endforeach
 tests = []
 foreach s : fs.read('tests.txt').strip().split('\n')
-    tests += files('tests/' + s)
+    tests += files('tests/' + s + '.cpp')
 endforeach
 
 if host_machine.system() == 'darwin'
@@ -50,6 +50,7 @@ bx_dep = declare_dependency(
     link_with: bx_lib,
     compile_args: bx_cpp_args,
 )
+
 subproject('catch2')
 catch_dep = dependency('catch2')
 e = executable(
