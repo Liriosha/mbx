@@ -51,6 +51,8 @@ bx_dep = declare_dependency(
     compile_args: bx_cpp_args,
 )
 
+meson.override_dependency('bx', bx_dep)
+
 subproject('catch2')
 catch_dep = dependency('catch2')
 e = executable(
