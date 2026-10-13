@@ -2,6 +2,10 @@ project('bx', 'cpp')
 
 add_project_arguments('-funsigned-char', language: 'cpp')
 
+if sys.OS() is 'Linux':
+  add_project_arguments('-fPIC', language: 'cpp')
+endif
+
 fs = import('fs')
 sources = []
 foreach s : fs.read('sources.txt').strip().split('\n')
