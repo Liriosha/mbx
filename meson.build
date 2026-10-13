@@ -2,7 +2,7 @@ project('bx', 'cpp')
 
 add_project_arguments('-funsigned-char', language: 'cpp')
 
-if host_machine.system() == 'Linux':
+if host_machine.system() == 'Linux'
   add_project_arguments('-fPIC', language: 'cpp')
 endif
 
