@@ -7,10 +7,6 @@ sources = []
 foreach s : fs.read('sources.txt').strip().split('\n')
     sources += files('src/' + s + '.cpp')
 endforeach
-tests = []
-foreach s : fs.read('tests.txt').strip().split('\n')
-    tests += files('tests/' + s + '.cpp')
-endforeach
 
 if host_machine.system() == 'darwin'
     compat_dir = 'include/compat/osx'
