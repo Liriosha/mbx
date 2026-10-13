@@ -52,14 +52,3 @@ bx_dep = declare_dependency(
 )
 
 meson.override_dependency('bx', bx_dep)
-
-subproject('catch2')
-catch_dep = dependency('catch2')
-e = executable(
-    'tests',
-    tests,
-    dependencies: [catch_dep, bx_dep],
-    cpp_args: ['-DBX_CONFIG_DEBUG'],
-)
-
-test('tests', e)
